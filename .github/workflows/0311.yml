@@ -1,0 +1,72 @@
+# Ett komplett workflow som täcker alla fyra uppgifter
+
+name: 0311
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"  # kör varje timme (exempel)
+
+jobs:
+  # --- Uppgift 1: Hello World ---
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skriv ut Hello
+        run: echo "Hello world"
+
+  # --- Uppgift 2: Miljövariabler ---
+  env_test:
+    runs-on: ubuntu-latest
+    env:
+      GREETING: "Hej världen"
+      NAME: "Student"
+    steps:
+      - name: Visa miljövariabler
+        run: |
+          echo "Hälsning: $GREETING"
+          echo "Namn: $NAME"
+          echo "Repo: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF"
+
+  # --- Uppgift 3: Flera jobb + secret ---
+  first_job:
+    runs-on: ubuntu-latest
+    env:
+      MESSAGE: "Första jobbet körs"
+    steps:
+      - name: Skriv ut meddelande
+        run: |
+          echo "$MESSAGE"
+          echo "Mitt hemliga värde: ${{ secrets.MITT_HEMLIGA_VÄRDE }}"
+
+  second_job:
+    needs: first_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fortsätt efter första jobbet
+        run: echo "Första jobbet klart – nu fortsätter vi!"
+
+  # --- Uppgift 4: Test och Build ---
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kör tester
+        run: |
+          echo "Kör tester..."
+          python -c "assert 1 + 1 == 2"
+          echo "Tester godkända!"
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bygg applikationen
+        run: |
+          echo "Bygger appen eftersom testerna gick bra!"
