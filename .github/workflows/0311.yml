@@ -42,7 +42,8 @@ jobs:
       - name: Skriv ut meddelande
         run: |
           echo "$MESSAGE"
-          echo "Mitt hemliga värde: ${{ secrets.MITT_HEMLIGA_VÄRDE }}"
+          echo "Mitt hemliga värde: ${{ secrets.MITT_HEMLIGA_VARDE }}"
+
 
   second_job:
     needs: first_job
